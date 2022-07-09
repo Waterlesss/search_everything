@@ -23,6 +23,12 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.36.0.3</version>
         </dependency>
+<!--        Lombok库-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -45,7 +51,7 @@
                     <archive>
                         <manifest>
                             <!--  指定入口类  -->
-                            <mainClass>util/PinyinUtil</mainClass>
+                            <mainClass>Main</mainClass>
                             <!--  在jar的MF文件中生成classpath属性  -->
                             <addClasspath>true</addClasspath>
                             <!--  classpath前缀,即依赖jar包的路径  -->
