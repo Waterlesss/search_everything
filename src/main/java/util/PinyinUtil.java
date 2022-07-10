@@ -19,7 +19,8 @@ import java.util.Arrays;
 public class PinyinUtil {
     //定义汉语拼音的配置 全局常量 必须在定义时初始化
     private static final HanyuPinyinOutputFormat FORMAT;
-
+    //所有的中文对应的unicode编码区间
+    private static final String CHINESE_PATTERN = "[\\u4E00-\\u9FA5]";
     //代码块就是在进行一些项目配置的初始化操作
     static {
         //使用静态代码块初始化 类一加载执行，还可以进行配置相关的工作
@@ -80,5 +81,13 @@ public class PinyinUtil {
         System.out.println(Arrays.toString(getPinyinByFileName(str1)));
         String str2 = "石思妙14s0123";
         System.out.println(Arrays.toString(getPinyinByFileName(str2)));
+    }
+
+    //判断给定的字符串是否包含中文
+    //Java中 字符采用Unicode编码 所有的中文都对应一个不同的unicode编码值
+    //只需要知道所有中文的编码起止区间即可
+    public static boolean containsChinese(String str) {
+        // .* 就表示 0 到 n 个字符
+        return str.matches(".*" + CHINESE_PATTERN + ".*");
     }
 }

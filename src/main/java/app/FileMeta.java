@@ -1,6 +1,7 @@
 package app;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import util.Util;
@@ -10,11 +11,13 @@ import java.util.Date;
 /**
  * @Author: Waterless
  * @Date: 2022/07/09/15:13
- * @Description:
+ * @Description: 实体类 使用此类完成和数据库数据表的映射关系
+ * 该类的一个对象就对应数据表的一行数据
  */
 @Data
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode
 public class FileMeta {
     private String name;
     private String path;
@@ -39,7 +42,7 @@ public class FileMeta {
         this.size = size;
         this.sizeText = Util.parseSize(size);
     }
-
+    //重载注解生成的setIsDirectory方法
     public void setIsDirectory(Boolean directory) {
         isDirectory = directory;
         this.isDirectoryText = Util.parseFileType( directory);

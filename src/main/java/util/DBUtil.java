@@ -6,9 +6,7 @@ import org.sqlite.SQLiteDataSource;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * @Author: Waterless
@@ -52,6 +50,7 @@ public class DBUtil {
         return url;
     }
     public static Connection getConnection() throws SQLException {
+        //相当于返回 datasource.getConnection();
         return getDataSource().getConnection();
     }
 
@@ -72,6 +71,17 @@ public class DBUtil {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+    //重载关闭方法
+    public static void close(Connection connection, PreparedStatement ps, ResultSet rs) throws SQLException {
+        close(connection,ps);
+        if (rs != null) {
+//            try {
+                rs.close();
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 }

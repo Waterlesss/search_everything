@@ -1,5 +1,6 @@
 package app;
 
+import callback.impl.FileSave2DB;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -22,7 +23,8 @@ import java.util.ResourceBundle;
 /**
  * @Author: Waterless
  * @Date: 2022/07/09/15:15
- * @Description:
+ * @Description: 和界面搭配的类 app.fxml中的所有数据提交给此类来执行后续流程
+ *
  */
 public class Controller implements Initializable {
 
@@ -68,7 +70,10 @@ public class Controller implements Initializable {
         //获取要扫描的文件夹路径之后，进行文件的扫描工作
         System.out.println("开始进行文件扫描,根路径为:" + path);
         long start = System.nanoTime();
-        FileScanner fileScanner = new FileScanner();
+        //调用任务类 进行文件扫描任务时 到底信息保存到哪个终端
+        //此时保存到数据库
+        FileScanner fileScanner = new FileScanner(new FileSave2DB());
+
         fileScanner.scan(file);
         long end = System.nanoTime();
         System.out.println("共耗时：" + (end - start) *1.0 / 1000000 + "毫秒");
@@ -76,7 +81,7 @@ public class Controller implements Initializable {
         System.out.println("共扫描到：" + fileScanner.getFileNum() + "个文件");
         System.out.println("共扫描到：" + fileScanner.getDirNum() + "个文件夹");
         //获取到所有扫描的文件内容
-        this.fileMetas = fileScanner.getFileMetas();
+//        this.fileMetas = fileScanner.getFileMetas();
         // TODO 刷新界面 展示刚才扫描到的文件信息
         freshTable();
     }
@@ -87,10 +92,10 @@ public class Controller implements Initializable {
         ObservableList<FileMeta> metas = fileTable.getItems();
         metas.clear();
         // TODO 扫描文件夹之后 刷新界面
-        if (this.fileMetas != null) {
-            //把所有的文件信息刷新到界面中
-            metas.addAll(fileMetas);
-        }
+//        if (this.fileMetas != null) {
+//            //把所有的文件信息刷新到界面中
+//            metas.addAll(fileMetas);
+//        }
     }
 
 }
