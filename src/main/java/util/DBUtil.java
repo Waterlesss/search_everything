@@ -16,7 +16,12 @@ import java.sql.*;
  * 无论是哪种关系型数据库，操作的流程都是JDBC四步走
  */
 public class DBUtil {
+    //单例数据源
     private volatile static DataSource dataSource;
+    
+    //单例数据库连接
+    private volatile static Connection connection;
+    
     //获取数据源方法，使用double-check单例模式获取数据源对象
     private static DataSource getDataSource() {
         if (dataSource == null) {
@@ -29,7 +34,7 @@ public class DBUtil {
                     dataSource = new SQLiteDataSource(config);
                     // 配置数据源的URL是SQLite子类独有的方法，因此向下转型
                     ((SQLiteDataSource) dataSource).setUrl(getUrl());
-                }
+                }   
             }
         }
         return  dataSource;
@@ -49,22 +54,24 @@ public class DBUtil {
         System.out.println("获取数据库的连接为 : " + url);
         return url;
     }
+    //多线程场景下，SQLite要求多个线程使用同一个连接
     public static Connection getConnection() throws SQLException {
-        //相当于返回 datasource.getConnection();
-        return getDataSource().getConnection();
+//        //相当于返回 datasource.getConnection();
+//        return getDataSource().getConnection();
+        if (connection == null) {
+            synchronized (DBUtil.class) {
+                if (connection == null) {
+                    connection = getDataSource().getConnection();
+                }
+            }
+        }
+        return connection;
     }
 
     public static void main(String[] args) throws SQLException {
         System.out.println(getConnection());
     }
-    public static void close(Connection connection, Statement statement) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public static void close(Statement statement) {
         if (statement != null) {
             try {
                 statement.close();
@@ -74,8 +81,8 @@ public class DBUtil {
         }
     }
     //重载关闭方法
-    public static void close(Connection connection, PreparedStatement ps, ResultSet rs) throws SQLException {
-        close(connection,ps);
+    public static void close( PreparedStatement ps, ResultSet rs) throws SQLException {
+        close(ps);
         if (rs != null) {
 //            try {
                 rs.close();

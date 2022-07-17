@@ -63,7 +63,7 @@ public class DBInit {
             List<String> sqls = readSQL();
             // 这里咱采用了普通的Statement接口，没有用PrepareStatement
             statement = connection.createStatement();
-            for (String sql : sqls) {
+            for (String sql : sqls) { 
                 System.out.println("执行SQL操作 : " + sql);
                 statement.executeUpdate(sql);
             }
@@ -71,7 +71,7 @@ public class DBInit {
             System.err.println("数据库初始化失败");
             e.printStackTrace();
         }finally {
-            DBUtil.close(connection,statement);
+            DBUtil.close(statement);
         }
     }
 

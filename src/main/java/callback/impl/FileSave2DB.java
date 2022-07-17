@@ -3,6 +3,7 @@ package callback.impl;
 import app.FileMeta;
 import callback.FileScanCallBack;
 import org.w3c.dom.ls.LSInput;
+import sun.awt.AWTAccessor;
 import util.DBUtil;
 import util.PinyinUtil;
 
@@ -39,22 +40,29 @@ public class FileSave2DB implements FileScanCallBack {
                     meta.setSize(file.length());
                 }
                 locals.add(meta);
+
             }
             //2.从数据库中查询出当前路径下的所有文件信息
             List<FileMeta> dbFiles = query(dir);
-
+            //数据库有的，本地没有 删除
+            //遍历dbFiles 本地不存在 删除
             //3. 对比 本地有 数据库没有的，做插入
             //遍历locals 若数据库不存在该FileMeta 就做插入
-            for (FileMeta meta : locals) {
-                if (!dbFiles.contains(meta)) {
-                    save(meta);
-                }
-            }
-            // 数据库有的 本地没有 做删除
-            //遍历dbFiles 本地不存在 做删除
+//            for (FileMeta meta : locals) {
+//                if (!dbFiles.contains(meta)) {
+//                    save(meta);
+//                }
+//            }
+//            // 数据库有的 本地没有 做删除
+//            //遍历dbFiles 本地不存在 做删除
             for (FileMeta meta : dbFiles) {
                 if (!locals.contains(meta)) {
                     delete(meta);
+                }
+            }
+            for (FileMeta meta : locals) {
+                if (!dbFiles.contains(meta)) {
+                    save(meta);
                 }
             }
         }
@@ -84,18 +92,18 @@ public class FileSave2DB implements FileScanCallBack {
                 ps.setString(4,meta.getPath() + File.separator + meta.getName() +
                         File.separator + "%");
             }
-            System.out.println("执行删除操作 SQL为：" + ps);
+//            System.out.println("执行删除操作 SQL为：" + ps);
             int rows = ps.executeUpdate();
-            if (meta.getIsDirectory()) {
-                System.out.println("删除文件夹 "+ meta.getName()+" 成功，共删除" + rows +"个文件");
-            } else {
-                System.out.println("删除文件 " + meta.getName() + "成功");
-            }
+//            if (meta.getIsDirectory()) {
+//                System.out.println("删除文件夹 "+ meta.getName()+" 成功，共删除" + rows +"个文件");
+//            } else {
+//                System.out.println("删除文件 " + meta.getName() + "成功");
+//            }
         } catch (SQLException e) {
             System.err.println("文件删除出错，请检查SQL语句");
             e.printStackTrace();
         } finally {
-            DBUtil.close(connection,ps);
+            DBUtil.close(ps);
         }
     }
 
@@ -125,14 +133,14 @@ public class FileSave2DB implements FileScanCallBack {
                 //首字母
                 ps.setString(7,pinyins[1]);
             }
-            System.out.println("执行文件的保存操作,SQL为: " + ps);
+//            System.out.println("执行文件的保存操作,SQL为: " + ps);
             int rows = ps.executeUpdate();
-            System.out.println("成功保存 " + rows + "行文件信息");
+//            System.out.println("成功保存 " + rows + "行文件信息");
         } catch (SQLException e) {
             System.err.println("保存文件信息出错，请检查SQL语句");
             e.printStackTrace();
         } finally {
-            DBUtil.close(connection,ps);
+            DBUtil.close(ps);
         }
     }
 
@@ -151,7 +159,7 @@ public class FileSave2DB implements FileScanCallBack {
             ps =connection.prepareStatement(sql);
             ps.setString(1,dir.getPath());
             rs = ps.executeQuery();
-            System.out.println("查询指定路径的SQL为：" + ps);
+//            System.out.println("查询指定路径的SQL为：" + ps);
             while (rs.next()) {
                 FileMeta meta = new FileMeta();
                 meta.setName(rs.getString("name"));
@@ -174,7 +182,7 @@ public class FileSave2DB implements FileScanCallBack {
             e.printStackTrace();
         } finally {
             try {
-                DBUtil.close(connection,ps,rs);
+                DBUtil.close(ps,rs);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

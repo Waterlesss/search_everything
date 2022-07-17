@@ -49,6 +49,7 @@ public class PinyinUtil {
         for (char c : fileName.toCharArray()) {
             //不考虑多音字，就使用第一个返回值作为我们的参数
             try {
+                //FORMAT 根据字符串的格式转换 返回多音字字母数组
                 String[] pinyins = PinyinHelper.toHanyuPinyinStringArray(c,FORMAT);
                 if (pinyins == null || pinyins.length == 0) {
                     //碰到非中文字符，直接保留
@@ -71,17 +72,17 @@ public class PinyinUtil {
         return ret;
     }
 
-    public static void main(String[] args) throws BadHanyuPinyinOutputFormatCombination {
-//        char c = '和';
-//        char c = '绿';
-//        //任意一个汉语的字符转换为字母字符串，得到的都是一个字符串数组，存在多音字
-//        String[] ret = PinyinHelper.toHanyuPinyinStringArray(c,FORMAT);
-//        System.out.println(Arrays.toString(ret));
-        String str1 = "妙妙真好";
-        System.out.println(Arrays.toString(getPinyinByFileName(str1)));
-        String str2 = "石思妙14s0123";
-        System.out.println(Arrays.toString(getPinyinByFileName(str2)));
-    }
+//    public static void main(String[] args) throws BadHanyuPinyinOutputFormatCombination {
+////        char c = '和';
+////        char c = '绿';
+////        //任意一个汉语的字符转换为字母字符串，得到的都是一个字符串数组，存在多音字
+////        String[] ret = PinyinHelper.toHanyuPinyinStringArray(c,FORMAT);
+////        System.out.println(Arrays.toString(ret));
+//        String str1 = "妙妙真好";
+//        System.out.println(Arrays.toString(getPinyinByFileName(str1)));
+//        String str2 = "石思妙14s0123";
+//        System.out.println(Arrays.toString(getPinyinByFileName(str2)));
+//    }
 
     //判断给定的字符串是否包含中文
     //Java中 字符采用Unicode编码 所有的中文都对应一个不同的unicode编码值
